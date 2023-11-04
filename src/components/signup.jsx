@@ -1,8 +1,8 @@
 import  { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom'; // Assuming you are using React Router
-
+import {  useNavigate } from 'react-router'; // Assuming you are using React Router
+import{Link} from 'react-router-dom'
 function SignupPage() {
-  const history = useHistory();
+  const history = useNavigate();
   const [name, setName] = useState('');
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
@@ -16,7 +16,7 @@ function SignupPage() {
       // Your signup logic here
       // Example: You can perform form validation, make an API request, etc.
       // For this example, we navigate to the dashboard directly.
-      history.push('/dashboard');
+      history.push('/');
     }
   };
 

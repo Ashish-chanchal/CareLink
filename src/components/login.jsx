@@ -1,13 +1,34 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom'; 
 function LoginPage() {
+  const navigate =useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-  
-  };
+  const handleClick= async(e)=>{
+    e.preventDefault();
+    const response = await fetch(`http://localhost:5000/api/auth/loginuser`,{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({email:email,password:password})
+      });
+      const json = await response.json();
+      console.log(json);
+      
+      
+      if(json.success){
+        localStorage.setItem('token',json.authToken);
+        navigate('/dashbord');
+        
+      }
+      else{
+       alert("Invalid Credentials ")
+      }
+}
 
   return ( 
     <>
@@ -31,7 +52,7 @@ function LoginPage() {
             onChange={(e) => setPassword(e.target.value)} />
         </div>
         <button
-          onClick={handleLogin}
+          onClick={handleClick}
           className="w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           Login

@@ -2,22 +2,38 @@ import  { useState } from 'react';
 import {  useNavigate } from 'react-router'; // Assuming you are using React Router
 import{Link} from 'react-router-dom'
 function SignupPage() {
-  const history = useNavigate();
+  const usertype= "patient";
+  const navigate = useNavigate();
   const [name, setName] = useState('');
-  const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmpassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
 
-  const handleSignup = () => {
+  const handleSignup =async  (e) => {
     // Implement your signup logic here, e.g., sending user data to a server.
     // If signup is successful, navigate to the dashboard.
-    if (name && mobile && password && confirmPassword && email) {
-      // Your signup logic here
-      // Example: You can perform form validation, make an API request, etc.
-      // For this example, we navigate to the dashboard directly.
-      history.push('/');
-    }
+    if (name && password && confirmpassword && email) {
+
+      e.preventDefault();
+      const response = await fetch(`http://localhost:5000/api/auth/createUser`,{
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify({usertype,name,email,password,confirmpassword})
+        });
+        const json = await response.json();
+        console.log(json);
+        
+        
+        if(json.success){
+          localStorage.setItem('token',json.authToken);
+          navigate.push('/dashbord');
+        }
+        
+  }
+
+
   };
 
   return (
@@ -33,15 +49,7 @@ function SignupPage() {
             onChange={(e) => setName(e.target.value)}
           />
         </div>
-        <div className="mb-4">
-          <input
-            type="text"
-            placeholder="Mobile Number"
-            className="w-full p-2 border rounded"
-            value={mobile}
-            onChange={(e) => setMobile(e.target.value)}
-          />
-        </div>
+    
         <div className="mb-4">
           <input
             type="password"
@@ -56,7 +64,7 @@ function SignupPage() {
             type="password"
             placeholder="Confirm Password"
             className="w-full p-2 border rounded"
-            value={confirmPassword}
+            value={confirmpassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </div>
